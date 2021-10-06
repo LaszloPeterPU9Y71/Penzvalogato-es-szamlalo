@@ -1,0 +1,11 @@
+import RPi.GPIO as GPIO
+GPIO.setmod(GPIO.BOARD)
+GPIO.setup(40,GPIO.IN)
+input = GPIO.input(40)
+
+while True:
+  if (GPIO.input(40)):
+    print("Adja a jelet")
+  else: print("Valami közte van")
+  
+  
