@@ -7,7 +7,3 @@ while True:
   if (GPIO.input(40)):
     print("Adja a jelet")
   else: print("Valami közte van")
-  
-  
-  
-  
