@@ -1,9 +1,48 @@
+from Adafruit_CharLCD import Adafruit_CharLCD
+import Adafruit_GPIO.PCF8574 as PCF
 import RPi.GPIO as GPIO
-GPIO.setmod(GPIO.BOARD)
-GPIO.setup(40,GPIO.IN)
-input = GPIO.input(40)
 
-while True:
-  if (GPIO.input(40)):
-    print("Adja a jelet")
-  else: print("Valami közte van")
+LCD = PCF.PCF8574(address=0x27)
+LCD.setup(5,0)
+LCD.output(5,0)
+
+#Kiosztja a pineket az LCD pinekhez
+lcd_rs = 4
+lcd_en = 7
+d4,d5,d6,d7 = 0,1,2,3
+cols,lines = 16,2
+# Kiosztja a pineket a nyomogombokhoz
+SW1 = 4 
+SW2 = 16
+SW3 = 10
+SW4 = 9
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(SW1, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+GPIO.setup(SW2, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+GPIO.setup(SW3, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+GPIO.setup(SW4, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+
+# Inicializaljuk a kijelzot.
+lcd = Adafruit_CharLCD(lcd_rs, lcd_en, d4, d5, d6, d7,cols, lines, gpio=LCD)
+lcd.clear()
+lcd.message('Proba szoveg')
+
+# Nyomogombok mukodesenek ellenorzese
+try:
+  while True:
+    if GPIO.input(SW1) == GPIO.LOW:
+    lcd.clear()
+    lcd.message ("Button 1 pressed!")
+    if GPIO.input(SW2) == GPIO.LOW:
+    lcd.clear()
+    lcd.message ("Button 2 pressed!")
+    if GPIO.input(SW3) == GPIO.LOW:
+    lcd.clear()
+    lcd.message ("Button 3 pressed!")
+    if GPIO.input(SW4) == GPIO.LOW:
+    lcd.clear()
+    lcd.message ("Button 4 pressed!")
+except KeyboardInterrupt:
+  lcd.clear()
+  GPIO.cleanup()
