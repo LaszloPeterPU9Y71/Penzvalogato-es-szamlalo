@@ -1,0 +1,14 @@
+import RPi.GPIO as GPIO
+
+otforint = 21
+
+def break_beam_callback(channel):
+  if GPIO.input(otforint):
+    print("Dobjon be egy ermet!")
+  else:
+    print("Erzekelte az erme elhaladasat!")
+GPIO.setmoda(GPIO.BCM)
+GPIO.setup(otforint, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.ADD_event_detect(otforint, GPIO.BOTH, callback=break_beam_callback)
+message=input("Enterrel tudsz kilépni")
+GPIO.cleanup()
