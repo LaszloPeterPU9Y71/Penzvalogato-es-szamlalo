@@ -6,13 +6,12 @@ LCD = PCF.PCF8574(address=0x27)
 LCD.setup(5,0)
 LCD.output(5,0)
 
-#Kiosztja a pineket az LCD pinekhez
 lcd_rs = 4
 lcd_en = 7
 d4,d5,d6,d7 = 0,1,2,3
 cols,lines = 16,2
-# Kiosztja a pineket a nyomogombokhoz
-SW1 = 4 
+
+SW1 = 4
 SW2 = 16
 SW3 = 10
 SW4 = 9
@@ -23,26 +22,83 @@ GPIO.setup(SW2, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 GPIO.setup(SW3, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 GPIO.setup(SW4, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
-# Inicializaljuk a kijelzot.
 lcd = Adafruit_CharLCD(lcd_rs, lcd_en, d4, d5, d6, d7,cols, lines, gpio=LCD)
 lcd.clear()
-lcd.message('Proba szoveg')
+lcd.message('Sikerült beüzemelni!)
 
-# Nyomogombok mukodesenek ellenorzese
+
+ot = 21
+szaz = 26
+tiz = 19
+husz = 13
+otven = 6
+ketszaz = 5
+
+def break_beam_callback_ot(channel):
+        if GPIO.input(ot):
+            lcd.clear()
+            lcd.message("5 Ft")
+            
+def break_beam_callback_szaz(channel):
+        if GPIO.input(szaz):
+            lcd.clear()
+            lcd.message("100 Ft" )
+            
+def break_beam_callback_tiz(channel):
+        if GPIO.input(tiz):
+            lcd.clear()
+            lcd.message("10 Ft" )
+            
+           
+def break_beam_callback_husz(channel):
+        if GPIO.input(husz):
+            lcd.clear()
+            lcd.message("20 Ft" )
+            
+def break_beam_callback_otven(channel):
+        if GPIO.input(otven):
+            lcd.clear()
+            lcd.message("50 Ft" )
+            
+def break_beam_callback_ketszaz(channel):
+        if GPIO.input(ketszaz):
+            lcd.clear()
+            lcd.message("200 Ft" )
+
+GPIO.setmode(GPIO.BCM) 
+GPIO.setup(ot, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(szaz, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(tiz, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(husz, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(otven, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(ketszaz, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+GPIO.add_event_detect(ot, GPIO.BOTH, callback=break_beam_callback_ot)
+GPIO.add_event_detect(szaz, GPIO.BOTH, callback=break_beam_callback_szaz)
+GPIO.add_event_detect(tiz, GPIO.BOTH, callback=break_beam_callback_tiz) 
+GPIO.add_event_detect(husz, GPIO.BOTH, callback=break_beam_callback_husz)        
+GPIO.add_event_detect(otven, GPIO.BOTH, callback=break_beam_callback_otven)
+GPIO.add_event_detect(ketszaz, GPIO.BOTH, callback=break_beam_callback_ketszaz)
+
+#message=input("Enter, ha ki akarsz lepni")
+#GPIO.cleanup()
+
+
 try:
-  while True:
-    if GPIO.input(SW1) == GPIO.LOW:
-    lcd.clear()
-    lcd.message ("Button 1 pressed!")
-    if GPIO.input(SW2) == GPIO.LOW:
-    lcd.clear()
-    lcd.message ("Button 2 pressed!")
-    if GPIO.input(SW3) == GPIO.LOW:
-    lcd.clear()
-    lcd.message ("Button 3 pressed!")
-    if GPIO.input(SW4) == GPIO.LOW:
-    lcd.clear()
-    lcd.message ("Button 4 pressed!")
+    while True:
+        if GPIO.input(SW1) == GPIO.LOW:
+            lcd.clear()
+            lcd.message("Teljes összeg: \n Forint!")
+        if GPIO.input(SW2) == GPIO.LOW:
+            lcd.clear()
+            lcd.message("Kulon darabszam!")
+        if GPIO.input(SW3) == GPIO.LOW:
+            lcd.clear()
+            lcd.message("Kulon darabszam \n Nullazas!")
+        if GPIO.input(SW4) == GPIO.LOW:
+            lcd.clear()
+            lcd.message("Teljes osszeg \n Nullazas!")
+            
 except KeyboardInterrupt:
-  lcd.clear()
-  GPIO.cleanup()
+    lcd.clear()
+    GPIO.cleanup()
