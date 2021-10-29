@@ -1,6 +1,7 @@
 from Adafruit_CharLCD import Adafruit_CharLCD
 import Adafruit_GPIO.PCF8574 as PCF
 import RPi.GPIO as GPIO
+import time
 
 LCD = PCF.PCF8574(address=0x27)
 LCD.setup(5,0)
@@ -24,7 +25,7 @@ GPIO.setup(SW4, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
 lcd = Adafruit_CharLCD(lcd_rs, lcd_en, d4, d5, d6, d7,cols, lines, gpio=LCD)
 lcd.clear()
-lcd.message('Sikerült beüzemelni!)
+lcd.message('Dobja be az\n ermeket!')
 
 
 ot = 21
@@ -34,36 +35,80 @@ husz = 13
 otven = 6
 ketszaz = 5
 
+
+
 def break_beam_callback_ot(channel):
         if GPIO.input(ot):
             lcd.clear()
-            lcd.message("5 Ft")
+            with open('file5') as file:
+                ot_db = file.read()
+            temp = int(ot_db) + 1
             
+            with open('file5', 'w') as file:
+                file.write (str(temp))
+            lcd.message('Otforintosok:\n')
+            lcd.message(str(temp) + ' db')
 def break_beam_callback_szaz(channel):
         if GPIO.input(szaz):
             lcd.clear()
-            lcd.message("100 Ft" )
+            with open('file100') as file:
+                szaz_db = file.read()
             
+            temp = int(szaz_db) + 1
+            
+            with open('file100', 'w') as file:
+                file.write (str(temp))
+            lcd.message('Szazforintosok:\n')
+            lcd.message(str(temp) + ' db')
 def break_beam_callback_tiz(channel):
         if GPIO.input(tiz):
             lcd.clear()
-            lcd.message("10 Ft" )
+            with open('file10') as file:
+                tiz_db = file.read()
             
-           
+            temp = int(tiz_db) + 1
+            
+            with open('file10', 'w') as file:
+                file.write (str(temp))
+            lcd.message('Tizforintosok:\n')
+            lcd.message(str(temp) + ' db')
 def break_beam_callback_husz(channel):
         if GPIO.input(husz):
             lcd.clear()
-            lcd.message("20 Ft" )
+            with open('file20') as file:
+                husz_db = file.read()
             
+            temp = int(husz_db) + 1
+            
+            with open('file20', 'w') as file:
+                file.write (str(temp))
+            lcd.message('Huszforintosok:\n')
+            lcd.message(str(temp) + ' db')
 def break_beam_callback_otven(channel):
         if GPIO.input(otven):
             lcd.clear()
-            lcd.message("50 Ft" )
+            with open('file50') as file:
+                otven_db = file.read()
             
+            temp = int(otven_db) + 1
+            
+            with open('file50', 'w') as file:
+                file.write (str(temp))
+            lcd.message('Otvenforintosok:\n')
+            lcd.message(str(temp) + ' db')
 def break_beam_callback_ketszaz(channel):
         if GPIO.input(ketszaz):
             lcd.clear()
-            lcd.message("200 Ft" )
+            with open('file200') as file:
+                ketszaz_db = file.read()
+            
+            temp = int(ketszaz_db) + 1
+            
+            with open('file200', 'w') as file:
+                file.write (str(temp))
+            lcd.message('Ketszazasok:\n')
+            lcd.message(str(temp) + 'db')
+            
 
 GPIO.setmode(GPIO.BCM) 
 GPIO.setup(ot, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -80,24 +125,111 @@ GPIO.add_event_detect(husz, GPIO.BOTH, callback=break_beam_callback_husz)
 GPIO.add_event_detect(otven, GPIO.BOTH, callback=break_beam_callback_otven)
 GPIO.add_event_detect(ketszaz, GPIO.BOTH, callback=break_beam_callback_ketszaz)
 
-#message=input("Enter, ha ki akarsz lepni")
-#GPIO.cleanup()
-
+SW2_state = 0
+SW4_state = 0
 
 try:
     while True:
+        
+        
+#Mindig a legkisebb címlettől kezdje a lekérdezést!
+#A 4-s gomb akkor is rákérdezzen a törlésre, ha közben másik gombot nyomunk!
         if GPIO.input(SW1) == GPIO.LOW:
+            SW4_state = 0
+            SW2_state = 0
+        if GPIO.input(SW2) == GPIO.LOW:
+            SW4_state = 0
+            SW1_state = 0
+        if GPIO.input(SW3) == GPIO.LOW:
+            SW1_state = 0
+            SW2_state = 0
+            SW4_state = 0
+        if GPIO.input(SW4) == GPIO.LOW:
+            SW2_state = 0
+            
+
+#Teljes összeg kiírása
+        if GPIO.input(SW1) == GPIO.LOW:
+            osszeg = 0
             lcd.clear()
-            lcd.message("Teljes összeg: \n Forint!")
+            with open('file5') as file:
+                osszeg += (int(file.read())*5)
+            with open('file10') as file:
+                osszeg += (int(file.read())*10)
+            with open('file20') as file:
+                osszeg += (int(file.read())*20)
+            with open('file50') as file:
+                osszeg += (int(file.read())*50)
+            with open('file100') as file:
+                osszeg += (int(file.read())*100)
+            with open('file200') as file:
+                osszeg += (int(file.read())*200)
+            lcd.message("Teljes osszeg: \n" + str(osszeg) + "HUF!")
+
+#Külön darabszám kiírása
+
         if GPIO.input(SW2) == GPIO.LOW:
             lcd.clear()
-            lcd.message("Kulon darabszam!")
-        if GPIO.input(SW3) == GPIO.LOW:
-            lcd.clear()
-            lcd.message("Kulon darabszam \n Nullazas!")
+            if (SW2_state == 0):
+                with open('file5') as file:
+                    lcd.message ('Otforintosok\n szama: ' + file.read() + 'db')
+                    time.sleep(0.5)
+            if (SW2_state == 1):
+                with open('file10') as file:
+                    lcd.message ('Tizforintosok\n szama: ' + file.read() + 'db')
+                    time.sleep(0.5)
+            if (SW2_state == 2):
+                with open('file20') as file:
+                    lcd.message ('Huszforintosok\n szama: ' + file.read() + 'db')
+                time.sleep(0.5)
+            if (SW2_state == 3):
+                with open('file50') as file:
+                    lcd.message ('Otvenforintosok\n szama: ' + file.read() + 'db')
+                time.sleep(0.5)
+            if (SW2_state == 4):
+                with open('file100') as file:
+                    lcd.message ('Szazforintosok\n szama: ' + file.read() + 'db')
+                time.sleep(0.5)
+            if (SW2_state == 5):
+                with open('file200') as file:
+                    lcd.message ('Ketszazasok\n szama: ' + file.read() + 'db')
+                time.sleep(0.5)
+            SW2_state = (SW2_state+1)%6
+            
+#Darabszámok külön nullázása!
+            
+        if GPIO.input(SW3) == GPIO.LOW and (SW2_state == 0):
+            lcd.message('Teljes osszeg\n nullazasa? I/N')
+            time.sleep(0.5)
+
+#Teljes összeg nullázása
+       
+
         if GPIO.input(SW4) == GPIO.LOW:
             lcd.clear()
-            lcd.message("Teljes osszeg \n Nullazas!")
+            if (SW4_state == 0):
+                lcd.message('Teljes osszeg\n nullazasa? I/N')
+                time.sleep(0.5)
+            if (SW4_state == 1):
+                temp = 0
+                with open('file5', 'w') as file:
+                    file.write (str(temp))
+                with open('file10', 'w') as file:
+                    file.write (str(temp))
+                with open('file20', 'w') as file:
+                    file.write (str(temp))
+                with open('file50', 'w') as file:
+                    file.write (str(temp))
+                with open('file100', 'w') as file:
+                    file.write (str(temp))
+                with open('file200', 'w') as file:
+                    file.write (str(temp))
+                    time.sleep(0.5)
+                lcd.clear()
+                lcd.message("Minden cimlet\n NULLAZVA")
+                SW4_state = 0
+            SW4_state = (SW4_state+1)%3
+            
             
 except KeyboardInterrupt:
     lcd.clear()
