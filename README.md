@@ -6,10 +6,14 @@ Használati útmutató:
 A szerkezet indulásakor az LCD kijelzőn megjelenik, hogy a 3-s gombbal tudja megnézni, hogy melyik gombbal milyen lehetőségek érhetőek el.
 
 Teljes összeg kiírása: 1-s gomb
+
 Címletek tárolóban lévő darabszáma: 2-s gomb
+
 Elérhető funkciók: 3-s gomb
+
 Teljes gépben lévő összeg törlése: 4-s gomb
-A következő gombnyomásra kiírja, hogy "Dobja be az érmét!"
+
+A következő gombnyomásra kiírja, hogy "Dobja be az érmét!
 
 Az érme bedobását bármikor megkezdhetjuk, ekkor a bedobott érme címletét és a már bedobott darabszámot írja ki. 
 
