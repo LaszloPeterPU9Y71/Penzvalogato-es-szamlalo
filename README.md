@@ -4,6 +4,7 @@ Mikroelektromechanikai rendszerek (GKLB_INTM020)
 Használati útmutató:
 
 A szerkezet indulásakor az LCD kijelzőn megjelenik, hogy a 3-s gombbal tudja megnézni, hogy melyik gombbal milyen lehetőségek érhetőek el.
+
 Teljes összeg kiírása: 1-s gomb
 Címletek tárolóban lévő darabszáma: 2-s gomb
 Elérhető funkciók: 3-s gomb
