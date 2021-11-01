@@ -25,8 +25,8 @@ GPIO.setup(SW4, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
 lcd = Adafruit_CharLCD(lcd_rs, lcd_en, d4, d5, d6, d7,cols, lines, gpio=LCD)
 lcd.clear()
-
 lcd.message('Funkciok---->\n3-s gomb!')
+
 
 ot = 21
 szaz = 26
@@ -132,26 +132,25 @@ SW4_state = 0
 try:
     while True:
         
-
 #Mindig a legkisebb cimlettol kezdje a lekerdezest!
 #A 4-s gomb akkor is rakerdezzen a torlesre, ha kozben masik gombot nyomunk!
-
         if GPIO.input(SW1) == GPIO.LOW:
             SW4_state = 0
             SW2_state = 0
+            SW3_state = 0
         if GPIO.input(SW2) == GPIO.LOW:
             SW4_state = 0
             SW1_state = 0
+            SW3_state = 0
         if GPIO.input(SW3) == GPIO.LOW:
             SW1_state = 0
             SW4_state = 0
         if GPIO.input(SW4) == GPIO.LOW:
             SW2_state = 0
+            SW3_state = 0
             
 
-
 #Teljes osszeg kiirasa
-
         if GPIO.input(SW1) == GPIO.LOW:
             osszeg = 0
             lcd.clear()
@@ -169,12 +168,11 @@ try:
                 osszeg += (int(file.read())*200)
             lcd.message("Teljes osszeg: \n" + str(osszeg) + "HUF!")
 
-
-
-#Kulön darabszam kiirasa
+#Kulon darabszam kiirasa
 
         if GPIO.input(SW2) == GPIO.LOW:
             lcd.clear()
+            temp = 0
             if (SW2_state == 0):
                 with open('file5') as file:
                     lcd.message ('Otforintosok\n szama: ' + file.read() + 'db')
@@ -201,10 +199,11 @@ try:
                 time.sleep(0.5)
             SW2_state = (SW2_state+1)%6
             
- #Funkciok ismertetese!
- 
+#Darabszamok kulon nullazasa!
+
         if GPIO.input(SW3) == GPIO.LOW:
             lcd.clear()
+            temp = 0
             i = 0
             if (SW3_state == 0):
                 lcd.message('Teljes osszeg\n1-s gomb!')
@@ -219,8 +218,6 @@ try:
                 lcd.message('Dobja be\naz ermeket')
                 time.sleep(0.5)
             SW3_state = (SW3_state+1)%4
-
-
 #Teljes osszeg nullazasa
        
 
