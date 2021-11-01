@@ -201,10 +201,10 @@ try:
                 time.sleep(0.5)
             SW2_state = (SW2_state+1)%6
             
-            
+ #Funkciok ismertetese!
+ 
         if GPIO.input(SW3) == GPIO.LOW:
             lcd.clear()
-            temp = 0
             i = 0
             if (SW3_state == 0):
                 lcd.message('Teljes osszeg\n1-s gomb!')
