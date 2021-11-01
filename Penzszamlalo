@@ -171,7 +171,7 @@ try:
 
 
 
-#Külön darabszám kiírása
+#Kulön darabszam kiirasa
 
         if GPIO.input(SW2) == GPIO.LOW:
             lcd.clear()
